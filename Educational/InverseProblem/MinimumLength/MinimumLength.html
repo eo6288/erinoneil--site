@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript"
+    src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
+    </script>
+    <title>Minimum Length</title>
+</head>
+<body>
+    <h1>Minimum Length</h1>
+    <br>
+    <h3>What your problem looks like:</h3>
+    <p>This approach is applicable to discrete, linear problems of the form $\textbf{d} = \textbf{G}\textbf{m}$. </p>
+    <br>
+    <p>You have more parameters to estimate than data points to contrain it. Bottom line: You are in this category because your problem has a nontrivial null space. If you try the least squares (L2) route on your problem, then you will find that inverting involves evaluating the determinant of $(G^TG)$ which is zero. Or you might have equivalently noticed that your $(G^TG)$ has zero eigenvalues. Basically, you have infinitely many solutions! </p> 
+    <img src="Underdetermined system.png" width = 400 height = 400 alt="In the simplest case of linear regression, if you only have 1 data point (blue) then infinitely many lines can fit it (nonunique solutions)!">
+    <br>
+    <a href="../InverseProblem.html">back</a>
+</body>
+</html>

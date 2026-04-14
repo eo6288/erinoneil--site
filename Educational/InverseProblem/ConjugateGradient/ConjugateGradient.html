@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript"
+    src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
+    </script>
+    <title>Conjugate Gradient</title>
+</head>
+<body>
+    <h1>Conjugate Gradient</h1>
+    <br>
+    <h3>What your problem looks like:</h3>
+    <p>This approach is applicable to problems of the form $\textbf{d} = g(\textbf{m})$ where you are able to reasonably linearize it to $\delta \textbf{d} = \textbf{G} \delta \textbf{m}$. </p>
+    <br>
+    <br>
+    <p>This is considered a "blind" optimization tool, meaning, it can only feel the slope beneath its feet. Therefore, plateaus and extremely jagged surfaces are its enemy. In practice, a preconditioner is always recommended for conjugate gradient methods. Mathematically, it tries to reduce the condition number of the matrix of the quadratic form.</p> 
+    $M^{-1}Ax = M^{-1}b$
+    <p>Where $M^{-1}$ is positive semi definite. Preconditioning can get you to the same answer, faster (it fixed ill-conditioning). It scales or transforms the search space (for example, using the Hessian). Preconditioning paces a road so you can drive faster to your destination. Imagine you have a super steep canyon, with poorly chosen step sizes, your solution will try to converge by bouncing from wall to wall of your solution space. However, multiplying by the inverse Hessian will make the steep canyon more bowl like which is more ideal (ellipses --> bowls).The only problem: computing the full hessian is extremely expensive.</p>
+    <h3>Quiz</h3>
+    <p>Which misfit equation would be more well-suited for preconditioning? </p>
+    $x^2 + y^2 = r^2$      or      $x^2 + 100y^2 = r^2$ 
+    <p>Answer: the latter because it is an ellipse! </p>
+    <a href="../InverseProblem.html">back</a>
+    
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript"
+    src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
+    </script>
+    <title>MCMC</title>
+</head>
+<body>
+    <h1>MCMC</h1>
+    <br>
+    <h3>What your problem looks like:</h3>
+    <p>This approach is applicable to highly nonlinear problems of the form $\textbf{d} = g(\textbf{m})$. </p>
+    <br>
+    <h3>What is the advantage of random sampling?</h3>
+    <ul>
+        <li>Reduces computational cost</li>
+        <li>Helps converge on a solution when no closed form exists</li>
+        <li>When there are so many model parameters that direct search is impossible</li>
+        <li>Gives you a more global picture. Gives you the change to explore other local minimums (think about non-convex misfits)</li>
+        <li>Allows you to make claims on uncertainty quantification.</li>
+    </ul>
+     <h3>When would you NOT want to us MCMC (or randomization)?</h3>
+     <p>When your misfit function is already convex! Why use computationally expensive, random guesses to converge on a solution when you can find the exact answer in real time.</p>
+     <h3>Common Algorithms to use in MCMC</h3>
+     <ul>
+        <li>Metropolis hasting:</li>
+        <li>Gibbs sampler:</li>
+     </ul>
+    
+    <a href="../InverseProblem.html">back</a>
+</body>
+</html>

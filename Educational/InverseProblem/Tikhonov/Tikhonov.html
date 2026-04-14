@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript"
+    src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
+    </script>
+    <title>Tikhonov</title>
+</head>
+<body>
+    <h1>Tikhonov</h1>
+    <br>
+    <h3>What your problem looks like:</h3>
+    <p>This approach is applicable to discrete, linear problems of the form $\textbf{d} = \textbf{G}\textbf{m}$. It is a constrained and non-constrained problem at the same time. This is because we don't care about the values of the model parameters, but we do penalize large values. </p>
+    <br>
+    <p>Say it with me: Regularizes fixes issues of model uniqueness. <i>Bottom line:</i> This methodology changes the normal equation to $\delta d = (G^TG + \lambda I^2)^{-1}G^T \delta d$ by adding a penalizing term to the objective function. Why would we want to add a regularizing term $\lambda$? When you have ill-posedbess in $G$, 2 or more vectors may be very similar which can produce non-unique solutions for $m$. Regularization says "consider the model norm too!" I like to think of it as related to <i>Occam's razor</i>, the regularization term will penalize complex solutions and choose the simplest $m$. Mathematically, this helps prevent the inversion filter from blowing up by putting an extra cushioning term on the denominator.  </p> 
+
+    <p>ANother bottom line: this is bias!</p>
+
+    <h3>Trade off between variance and resolution</h3>
+    <p>Adding a strong regularizing term will reduce variance in the model. Why? Because the goal is to bring near-zero singular values away from zero. Zero singular values are a red flag for high variance because the solution will blow up with each run of the model. When you strongly regularize, you are drastically increasing those singular values. However, by doing so, it will also decrease the resolution of your model because essentially, you are smoothing/smearing G. </p>
+
+    <h3>Choosing an appropriate regularizing term</h3>
+    <p> Whenever you making a choice, you are introducing bias into your model. There are many methods for choosing an appropriate $\lambda$. The main 3 ways are outlined before. </p>
+    <a href="../InverseProblem.html">back</a>
+    
+</body>
+</html>
