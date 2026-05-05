@@ -16,20 +16,20 @@
 <ul>
     <li>It gives us information about spatial relationships</li>
     <li>It allows us to model random fields (stochastic processes in multiple dimensions)</li>
-    <li></li>
+    <li>It can be applied to a number of problems (interpolation, extrapolation, </li>
 </ul>
 <br>
 <br>
 <br>
 <h3>Foundation of spatial statistics</h3>
-<p>Spatial statistics is the study of an indexed family of random variables, $Z(\textbf{s})$. A <b>random variable</b> can be thought of a mapping from outcomes to numbers. The Z notation for a random variable is just a nod to the fact that we have the ability to work with complex values. The "index" refers to the spatial vector <b>s</b> that can live in any dimension. For instance, a cartesian map with 5 points on it will be respresented as $(\textbf{s}_1, \textbf{s}_2, \textbf{s}_3, \textbf{s}_4, \textbf{s}_5)$ where each $\textbf{s}_i= (\phi_i,\lambda_i)$ for latitude and longitude.</p>
+<p>Spatial statistics is the study of an indexed family of random variables, $Z(\textbf{s})$. A <b>random variable</b> can be thought of a mapping from outcomes to numbers. The Z notation for a random variable is just a nod to the fact that we have the ability to work with complex values. The "index" refers to the spatial vector <b>s</b> that can live in any dimension. For instance, a cartesian map with 5 points on it will be respresented as $(\textbf{s}_1, \textbf{s}_2, \textbf{s}_3, \textbf{s}_4, \textbf{s}_5)$ where each $\textbf{s}_i= (\phi_i,\lambda_i)$ for latitude and longitude. Lastly, something to be aware of is that functions of random variables are random variables themselves. </p>
 <br>
 <br>
 <br>
 <h3>Gaussian Processes</h3>
 <p>A <b>gaussian process</b> is a generalization of a random variable. More specifically, it is a distribution over functions. Instead of each "draw" or "realization" being a number, each realization is an entire function called a <b>sample path</b>. Four, 1D sample paths in the time/spatial domain are pictured below, each generated with the same mean and covariance structure.</p>
 <img src="sample_path.png" height = 200, width = 600 alt="This image shows 4 line plots that all come from the same Gaussian process but each look different">
-<p>The covariance kernel/matrix/function provides the underlying structure of the field (tunable through <i>parameters</i> such as correlation length or variance). Choosing a covariance structure can be a bit arbitrary at times. In general, you want to model it off of the properties you observe in your time series/data (is it periodic? stationary? smooth?...). I refer the interested reader to this source for a "<a href= "https://www.cs.toronto.edu/~duvenaud/cookbook/index.html">Kernel Cookbook</a>." The only rules for choosing a kernel is that it has to be symmetric and positive semi-definite. To incorporate randomness, you are essentially transforming white noise (z) with the covariance kernel: </p>
+<p>The covariance kernel/matrix/function provides the underlying structure of the field (tunable through <i>parameters</i> such as correlation length or variance). Choosing a covariance structure can be a bit arbitrary at times. In general, you want to model it off of the properties you observe in your time series/data (is it periodic? stationary? smooth?...). I refer the interested reader to this source for a "<a href= "https://www.cs.toronto.edu/~duvenaud/cookbook/index.html">Kernel Cookbook</a>." The only rules for choosing a kernel is that it has to be symmetric and positive semi-definite (see "Covariance Matrix of a Random Vector"). To incorporate randomness, you are essentially transforming white noise (z) with the covariance kernel: </p>
 $z \sim N(0,1)$ <br>
 C(t, t') $ = LL^T$ <br>
 ${cov}(Lz) = L^T{cov}(z)L = LIL^T= LL^T$ = C(t, t') <br>
@@ -42,6 +42,9 @@ ${cov}(Lz) = L^T{cov}(z)L = LIL^T= LL^T$ = C(t, t') <br>
     <li>Condinitioning updates beliefs</li>
 </ol>
 <br>
+<br>
+<h3>Covariance Matrix of a Random Vector</h3>
+<p>The covariances of $M$ random variables $X_1, X_2, X_3, ... X_M$ (which make up a random vector <b>X</b>) can be arranged into an $M \times M$ symmetric matrix with positive "variance." </p>
 <br>
 <br>
 <body>

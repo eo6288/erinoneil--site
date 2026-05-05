@@ -10,13 +10,11 @@
 </head>
 <body>
     <h1>MAP</h1>
-    <br>
-    <h3>What your problem looks like:</h3>
-    <p>This approach is applicable to highly nonlinear problems of the form $\textbf{d} = g(\textbf{m})$. </p>
-    <br>
-    <p>The <i>maximum a priori</i> (MAP) method is essentially a regularization technique for optimization problems. In other words, adding a prior is adding a penalty term. It changes the geometry of your misfit surface to, hopefully, make finding a suitable minimum easier.</p>
-    <h3>What exactly is the prior?</h3>
-    <p>The prior is a multiplicative factor in the bayestian approach to optimization problems. In most cases, it restricts the range of parameter values. Another way to look at this is it <i>penalizes extreme parameter values.</i> Sometimes, your misfit surface can be nonconvex. This means there are mutliple reasonable minimums. The prior tells you "choose the simplest one!" Another example of when this can be useful is when parameters trade off. Say that parameters x and y are highly, negatively correlated. Then you are likely to find valid models that fit high x and low y values AND low x values and high y values. The prior can help impose a minimum in this case.  </p>
+     <img src="MAP.png" width = 800 height = 700>
+     <br>
+     <br>
     <a href="../InverseProblem.html">back</a>
+    <br>
+    <br>
 </body>
 </html>
