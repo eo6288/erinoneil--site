@@ -11,7 +11,7 @@
 <h1>Spectral Analysis</h1>
 <body>
     <h3>Why study spectral analysis?</h3>
-    <p> Spectral analysis gives us a new lense for analyzing ordinary time series data. On this page, we will be focusing on <i>nonparametric</i> spectral estimation as defined in "Spectral Analysis for Univariate Time Series" by Percival & Walden (2020). Below are some notable example applications:</p>
+    <p> Spectral analysis gives us a new lense for analyzing ordinary time series data. Below are some notable example applications (Taken from "Spectral Analysis for Univariate Time Series" by Percival & Walden (2020)):</p>
     <ul>
         <li><b>Testing theories with observations:</b> Scientist predicted that there should be a peak in the spectrum in the low-frequency range for wind speed data (the macrometeorological/synoptic peak). To test this theory, wind speed data was transformed to the spectral domain.  </li>
         <br>
@@ -22,87 +22,61 @@
         <li><b>Evaluating model fitting:</b> Imagine you want to fit a time series to some function. If you find the spectrum of the time series, you can subtract a theoretical spectrum (such as ARIMA) and analyze the residuals. A good fit will return white noise (no leftover structure).  </li>
     </ul>
     <br>
+    <h3>The Story of Spectral Analysis:</h3>
+    <p> We observe one finite realization of a weakly stationary stochastic process. Stationarity gives an autocovariance depending only on lag. We use the Wiener–Khinchin theorem to arrive at the power spectral density function (PSD). The periodogram estimates that PSD, but finite observation causes leakage and high variance, so we use tapering, smoothing, averaging, or multitapering to trade bias and variance.</p>
     <br>
     <br>
-    <h2>Ch. 1: Time Series Analysis </h2>
-    <p>We will begin with the definition of a discrete <b>time series</b> $\{x_t\}$. This is merely a sequence of numbers (data) with some ordering. It is considered <i>one realization</i> of a true stochastic process $\{X_t\}$. We typically assume our time series is <b>stationary</b> (specifically, we will focus on weak (second order) stationarity). I like to think of the test of stationarity as looking through binoculars. If no matter where you look the overall statistics don't really change (up to the second moment for our purposes), then you have weak stationarity. In addition, we have a notion of <b>ergodicity</b> meaning that one realization of the data can tell us all we need to know. Here is a diagram that illustrates a non-stationary sequency. You can see the statistics start to grow over time. Each color is a different splice of the time axis. </p>
-    <br>
-    <img src="figs/stationary.png" width = 600 height = 450  alt="A plot showing stationary and non-stationary data">
-    <br>
-    <p></i>Wherever possible on this page, I will be using wind speed direction data for demonstrataion purposes. In the upper left corner of the figure below, we see the wind speed data time series. By default, MATLAB connects lines through points, otherwise one would see discrete points. <i>If </i> we assume a linear relationship between elements of the time series then we can use a powerful summary statistic to <i>analyze relationships</i> within the time series. The following is the <b>sampled autocorrelation sequence (ACS)</b>:</p>
-    $\hat{\rho}_{\tau} = \frac{\sum_{t = 0}^{N - \tau - 1}(x_{t + \tau} - \bar{x})(x_{t} - \bar{x})}{\sum_{t = 0}^{N - 1}(x_{t} - \bar{x})^2}$ 
-    <p>Note that at lag $\tau = 0$, the ACS evaluates to 1. This is a dimensionless quantity between [-1, 1]. Since it is dimensionless, it is used for model identification (i.e. you look at the normalized function and ask "what model fits this data?"). As $\tau$ increases the numerator will be based on fewer and fewer terms (i.e. plots like the bottom left hand corner will have fewer and fewer points). This can make the estimator noisier. As the number of points $N$ increases, the sampled ACS converges to the <b>theoretical autocorrelation sequence</b> :</p>
-    $\rho_{\tau} = \frac{E\{(X_{t + \tau} - \mu)(X_{t} - \mu)\}}{\sigma^2}$
-    <br>
-    <img src="figs/1_ACVS.png" width = 600 height = 450 alt="ACVS sequence for wind speed data">
-    
-    <p>The ACS is really a normalized version of what is called the <b>autocovariance sequence (ACVS)</b>:</p>
-    $\gamma(\tau) = E\{(X_{t + \tau} - \mu)(X_{t} - \mu)\}$
-    <br>
-    $\hat{\rho}_{\tau} = \frac{\gamma(\tau)}{\gamma(0)}$
-    <p>Notice the subtle fact that I slipped in that the zeroth term of the ACVS is the variance. The ACVS has dimensions. In order to get the spectrum, we transform the ACVS.</p>
-    <br>
-    <br>
-    <br>
-    <br>
-    <h2>Ch. 2: Stationary Stochastic Processes </h2>
-    <p>I will now define some basic facts about <b>random variables (RVs)</b>. The following definition will be essential for our understanding of fourier series and transforms in the next section:</p>
-    $X_t = \mu + \Sigma_{j = 1}^{\lfloor N/2 \rfloor} [A_j cos(2\pif_jt)+ B_jsin(2\pif_jt)]$ where $t = 1, ..., N-1$ and $f_j = j /N$
-    <p>Note that the <i>coefficients</i> A and B are random variables themselves with expectation 0 at all frequencies but a variance that can be different at each frequency:</p>
-    $E\{A_j\} = E\{B_j\}  = 0$ and $E\{A_j^2\} = E\{B_j^2\} = \sigma_j^2$
-    <p>You can read the variances of the amplitudes as <i>"at the jth frequency, how much we'd expect the amplitudes to vary is $\sigma_j^2$"</i>. Sometimes, we actually relabel $\sigma_j^2$ as the <b>spectrum</b> at a given frequency (i.e. $S_j = \sigma_j^2$). Summing over all frequency variances, we return the variance of the process: </p>
-    $\Sigma_{j = 1}^{\lfloor N/2 \rfloor} S_j = \sigma^2$
-    <p>Why do we need this? The spectrum tells us how the variance of the process is distributed across frequencies! Note that since we are working with discrete data points in our wind speed time series, we are not able to know the true spectrum because it relies on an underlying stochastic process. Therefore, we <i>MUST</i> estimate it. You will discover this on your own relatively quickly because you won't be able to construct an expression for $X_t$ without knowing the true frequency components. The following plot was made by estimating the spectrum with a periodogram (more on the mathematics of that in Ch. 6):</p>
-    <img src="figs/spectrum.png"  width = 400 height = 250  alt="plot of the spectrum of the wind speed data">
-    <p>Looking at this plot, we are able to infer that most of the variability comes from the low frequency intervals (slow oscillations). </p>
-    <br>
-    <br>
-    <br>
-    <br>
-    <h2>Ch. 3: Deterministic Stochastic Processes (Fourier Analysis)</h2>
-    <img src="">
-    <img src="figs/Transforms.jpg" width = 400 height = 1100 alt="this image shows how certain functions transform shape between space and frequency domains">
-    <br>
-    Some important artefacts: 
-    <ul>
-        <li><b>Gibbs Phenomena:</b> </li>
-        <li>Shannon Nyquist Sampling Theorem:</li>
-    </ul>
-    <p>The FFT algorithm is incredibly powerful. Its magic lies in a divide-and-conquer approach that reduces the complexity depth to $O(log(n))$ by cutting the problem in half at each step. </p>
-    <br>
-    <br>
-    <br>
-    <h2>Ch. 4: Sampling & Aliasing </h2>
-
-    <br>
+    <b>Click on the buttons below to know more information!</b>
+    <!-- Image Map Generated by http://www.image-map.net/ -->
+    <div style="width:700px;">
+    <div style="transform: scale(0.6); transform-origin: top left;">
+    <img src="Spectral_Analysis_Website_Buttons.png" usemap="#image-map">
+    <map name="image-map">
+        <area target="" alt="Stationarity" title="Stationarity" href="Stationarity.html" coords="66,94,297,273" shape="rect">
+        <area target="" alt="Sampling" title="Sampling" href="Sampling.html" coords="301,96,528,272" shape="rect">
+        <area target="" alt="WK" title="WK" href="WK.html" coords="535,96,763,273" shape="rect">
+        <area target="" alt="Consistency" title="Consistency" href="Consistency.html" coords="777,99,992,272" shape="rect">
+        <area target="" alt="Periodogram" title="Periodogram" href="Periodogram.html" coords="68,284,290,439" shape="rect">
+        <area target="" alt="Rules" title="Rules" href="Rules.html" coords="303,286,525,440" shape="rect">
+        <area target="" alt="FA" title="FA" href="FA.html" coords="535,286,762,445" shape="rect">
+        <area target="" alt="CTCF" title="CTCF" href="CTCF.html" coords="773,286,995,443" shape="rect">
+        <area target="" alt="DTCF" title="DTCF" href="DTCF.html" coords="65,451,292,609" shape="rect">
+        <area target="" alt="DTDF" title="DTDF" href="DTDF.html" coords="304,456,527,610" shape="rect">
+        <area target="" alt="CTDF" title="CTDF" href="CTDF.html" coords="536,456,766,612" shape="rect">
+        <area target="" alt="FFT" title="FFT" href="FFT.html" coords="766,453,995,609" shape="rect">
+        <area target="" alt="AR" title="AR" href="AR.html" coords="66,618,290,780" shape="rect">
+        <area target="" alt="MA" title="MA" href="MA.html" coords="301,622,530,779" shape="rect">
+        <area target="" alt="ARMA" title="ARMA" href="ARMA.html" coords="536,621,765,782" shape="rect">
+        <area target="" alt="PSD" title="PSD" href="PSD.html" coords="774,622,993,775" shape="rect">
+        <area target="" alt="ACF" title="ACF" href="ACF.html" coords="65,786,294,945" shape="rect">
+        <area target="" alt="Stochastic" title="Stochastic" href="Stochastic.html" coords="304,791,528,945" shape="rect">
+        <area target="" alt="Convolution" title="Convolution" href="Convolution.html" coords="538,789,766,947" shape="rect">
+        <area target="" alt="Leakage" title="Leakage" href="Leakage.html" coords="769,788,998,948" shape="rect">
+        <area target="" alt="Toeplitz" title="Toeplitz" href="Toeplitz.html" coords="65,953,297,1120" shape="rect">
+        <area target="" alt="Plancherel" title="Plancherel" href="Plancherel.html" coords="301,953,528,1112" shape="rect">
+        <area target="" alt="Rectangle" title="Rectangle" href="Rectangle.html" coords="538,956,762,1115" shape="rect">
+        <area target="" alt="Hamming" title="Hamming" href="Hamming.html" coords="769,958,1000,1118" shape="rect">
+        <area target="" alt="Hann" title="Hann" href="Hann.html" coords="65,1123,294,1284" shape="rect">
+        <area target="" alt="Blackman" title="Blackman" href="Blackman.html" coords="303,1126,530,1284" shape="rect">
+        <area target="" alt="Bartlett" title="Bartlett" href="Bartlett.html" coords="536,1121,766,1285" shape="rect">
+        <area target="" alt="Indirect" title="Indirect" href="Indirect.html" coords="774,1128,998,1282" shape="rect">
+        <area target="" alt="Smoothed" title="Smoothed" href="Smoothed.html" coords="63,1293,297,1454" shape="rect">
+        <area target="" alt="Lag" title="Lag" href="Lag.html" coords="301,1291,532,1452" shape="rect">
+        <area target="" alt="MT" title="MT" href="MT.html" coords="536,1291,765,1454" shape="rect">
+        <area target="" alt="Slepian" title="Slepian" href="Slepian.html" coords="769,1293,1000,1447" shape="rect">
+        <area target="" alt="Concentration" title="Concentration" href="Concentration.html" coords="66,1460,294,1619" shape="rect">
+        <area target="" alt="Expectation" title="Expectation" href="Expectation.html" coords="304,1461,528,1616" shape="rect">
+        <area target="" alt="Ideal" title="Ideal" href="Ideal.html" coords="536,1463,765,1620" shape="rect">
+        <area target="" alt="WOSA" title="WOSA" href="WOSA.html" coords="776,1460,997,1620" shape="rect">
+        <area target="" alt="Bias" title="Bias" href="Bias.html" coords="68,1628,294,1783" shape="rect">
+        <area target="" alt="Shift" title="Shift" href="Shift.html" coords="303,1630,524,1783" shape="rect">
+        <area target="" alt="Hermitian" title="Hermitian" href="Hermitian.html" coords="535,1625,763,1786" shape="rect">
+        <area target="" alt="Fejer" title="Fejer" href="Fejer.html" coords="774,1628,995,1784" shape="rect">
+    </map>
+    </div>
+    </div>
     <br>
     <br>
-    <br>
-    <h2>Ch. 5: Linear Time Invariant Filters </h2>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <h2>Ch. 6: Periodogram & Other Direct Spectral Estimators </h2>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <h2>Ch. 7: Lag Window & Spectral Estimators </h2>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <h2>Ch. 8: Combined Direct Spectral Estimators </h2>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    
     <a href="../Educational.html">back</a>  
 </body>
 </html>

@@ -1,88 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="text/javascript"
-    src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
-    </script>
-    <title>Spatial Statistics</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript"
+src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
+</script>
+
+<title>Spatial Statistics</title>
+
+<link href="../css/main.css" rel="stylesheet">
+
+<style>
+
+.topic-card{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    margin-bottom:1rem;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+}
+
+.topic-header{
+    width:100%;
+    border:none;
+    background:white;
+    cursor:pointer;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:1.25rem;
+
+    text-align:left;
+    font-size:1.1rem;
+    font-weight:600;
+}
+
+.topic-header:hover{
+    background:#f8fafc;
+}
+
+.arrow{
+    transition:transform 0.25s ease;
+    font-size:1rem;
+}
+
+.arrow.rotate{
+    transform:rotate(90deg);
+}
+
+.topic-content{
+    display:none;
+    padding:0 1.5rem 1.5rem 1.5rem;
+}
+
+.topic-content.active{
+    display:block;
+}
+
+.topic-content img{
+    max-width:100%;
+    height:auto;
+    display:block;
+    margin:1rem auto;
+    border-radius:8px;
+}
+
+.section-title{
+    font-weight:bold;
+    margin-top:1.5rem;
+    margin-bottom:0.5rem;
+}
+
+.equation-box{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    padding:1rem;
+    margin:1rem 0;
+}
+
+h1{
+    margin-bottom:0.25rem;
+}
+
+blockquote{
+    border-left:4px solid #cbd5e1;
+    padding-left:1rem;
+    color:#475569;
+    font-style:italic;
+}
+
+</style>
+
 </head>
-<h1>Spatial Statistics</h1>
-<p><i>"Everything is related to everything else, but near things are more related than distant things."</i> - Tobler’s First Law of Geography </p>
-<br>
-<br>
-<h3>Why study spatial statistics?</h3>
-<ul>
-    <li>It gives us information about spatial relationships</li>
-    <li>It allows us to model random fields (stochastic processes in multiple dimensions)</li>
-    <li>It can be applied to a number of problems (interpolation, extrapolation, </li>
-</ul>
-<br>
-<br>
-<br>
-<h3>Foundation of spatial statistics</h3>
-<p>Spatial statistics is the study of an indexed family of random variables, $Z(\textbf{s})$. A <b>random variable</b> can be thought of a mapping from outcomes to numbers. The Z notation for a random variable is just a nod to the fact that we have the ability to work with complex values. The "index" refers to the spatial vector <b>s</b> that can live in any dimension. For instance, a cartesian map with 5 points on it will be respresented as $(\textbf{s}_1, \textbf{s}_2, \textbf{s}_3, \textbf{s}_4, \textbf{s}_5)$ where each $\textbf{s}_i= (\phi_i,\lambda_i)$ for latitude and longitude. Lastly, something to be aware of is that functions of random variables are random variables themselves. </p>
-<br>
-<br>
-<br>
-<h3>Gaussian Processes</h3>
-<p>A <b>gaussian process</b> is a generalization of a random variable. More specifically, it is a distribution over functions. Instead of each "draw" or "realization" being a number, each realization is an entire function called a <b>sample path</b>. Four, 1D sample paths in the time/spatial domain are pictured below, each generated with the same mean and covariance structure.</p>
-<img src="sample_path.png" height = 200, width = 600 alt="This image shows 4 line plots that all come from the same Gaussian process but each look different">
-<p>The covariance kernel/matrix/function provides the underlying structure of the field (tunable through <i>parameters</i> such as correlation length or variance). Choosing a covariance structure can be a bit arbitrary at times. In general, you want to model it off of the properties you observe in your time series/data (is it periodic? stationary? smooth?...). I refer the interested reader to this source for a "<a href= "https://www.cs.toronto.edu/~duvenaud/cookbook/index.html">Kernel Cookbook</a>." The only rules for choosing a kernel is that it has to be symmetric and positive semi-definite (see "Covariance Matrix of a Random Vector"). To incorporate randomness, you are essentially transforming white noise (z) with the covariance kernel: </p>
-$z \sim N(0,1)$ <br>
-C(t, t') $ = LL^T$ <br>
-${cov}(Lz) = L^T{cov}(z)L = LIL^T= LL^T$ = C(t, t') <br>
-<p>One can imagine that if you sample more and more, a distribution over the sample paths will emerge. That is called you <b>latent function distribution</b> which I like to think about as the <i>background</i> function. We choose a Gaussian distribution because it is unikely determined by only 2 measurements (mean and covariance), is closed under conditioning, and closed under marginalization. Closed under conditioning is an important mathematical nuance because it allows us to "condition out" the infinite part of a function/vector to just focus on a finite vector (a necessary condition for Gaussian processes). Below, I present five key facts related to Gaussian Processes and the Bayesian analysis of it: </p>
-<ol>
-    <li>A Gaussian process is completely determined by its first and second moments</li>
-    <li>All finite subsets of Gaussian processes must be jointly Gaussian</li>
-    <li>Covariance controls structure</li>
-    <li>More data reduces uncertainty (observations reduce the space of possible sample functions)</li>
-    <li>Condinitioning updates beliefs</li>
-</ol>
-<br>
-<br>
-<h3>Covariance Matrix of a Random Vector</h3>
-<p>The covariances of $M$ random variables $X_1, X_2, X_3, ... X_M$ (which make up a random vector <b>X</b>) can be arranged into an $M \times M$ symmetric matrix with positive "variance." </p>
-<br>
-<br>
+
 <body>
-    <h3>Convergence of Sequences of Random Variables</h3>
-    Convergence analysis allows us to make statements about long term <i>asymptotics</i> of a sequence of random variable $X_n$. This is amazing because it can tell us if random events settle into patterns (beit about the mean, probability, or distribution). In probability theory, there exists three types of convergence of sequences of random variables (ordered here from weakest to strongest):
-    <ul>
-        <li><b>Convergence in distribution (law):</b> $F_{X_n}(x) \rightarrow F_X(x)$ (think: the histograms match)</li>
-        <ul>
-            <li>Ex: If you roll a fair dice many, many times, you'd expect the histogram to converge to the uniform distribution.</li>
-        </ul>
-        <li><b>Convergence in probability:</b> $P(|X_N - X| > \epsilon) \rightarrow 0$ (think: they are close)</li>
-        <ul>
-            <li>Ex: If you were to plot the height of more and more people, the true mean human height would emerge</li>
-        </ul>
-        <li><b>Almost Surely convergence:</b> $P( X_n \rightarrow X) = 1$ (think: we know how the sample paths will converge)</li>
-        <ul>
-            <li>Ex: If you studied how much a specific animal eats per day, that will fluctuate. But one day, you will be almost sure it will be 0.</li>
-        </ul>
-    </ul>
-    <br>
-    <br>
-    <br>
-    <h3>Central Limit Theorem (CLT) vs. Weak Law of Large Numbers (WLLN)</h3>
-    The CLT and WLLN both study the same object, namely, the sample mean $\bar{X}_n = \frac{1}{N}\sum X_i$, but ask two different questions about it: 
-    <ul>
-        <li><b>CLT:</b> What is the long term distribution of the sample mean? $\bar{X} \rightarrow \mu$ </li>
-        <li><b>WLLN:</b> What does the sample mean get closer and closer to? $\frac{\sqrt{n}}{\sigma}(\bar{X}_n - \mu) \rightarrow N(0,1)$ </li>
-    </ul>
-    <br>
-    <br>
-    <br>
-    <h3>All about Lebesgue</h3>
-     If you have a uniform distribution between [0,1] then the fractional lengths within that interval are the probabilities. This is <i>Lebesgue probability</i>.
-    <br>
-    <br>
-    <br>
-    <a href="../Educational.html">back</a>
-    <br>
-    <br>        
+
+<div class="container">
+
+<h1>Spatial Statistics</h1>
+
+<blockquote>
+"Everything is related to everything else, but near things are more related than distant things."
+— Tobler's First Law of Geography
+</blockquote>
+<br>
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    Why study spatial statistics?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+<ul>
+<li>It gives us information about spatial relationships</li>
+<li>It allows us to model random fields (stochastic processes in multiple dimensions)</li>
+<li>It can be applied to a number of problems (interpolation, extrapolation, simulation, modeling, growing-domain, etc.)</li>
+</ul>
+</p>
+</div>
+</div>
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    What is spatial statistics?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+Spatial statistics is the study of an indexed family of random variables,
+$Z(\textbf{s})$.
+A <b>random variable</b> can be thought of as a mapping from outcomes to numbers.
+The Z notation for a random variable is just a nod to the fact that we have the ability to work with complex values. The "index" refers to the spatial vector <b>s</b> that can live in any dimension. For instance, a cartesian map with 5 points on it will be represented as
+$(\textbf{s}_1,\textbf{s}_2,\textbf{s}_3,\textbf{s}_4,\textbf{s}_5)$
+where each
+$\textbf{s}_i=(\phi_i,\lambda_i)$
+for latitude and longitude. Lastly, something to be aware of is that functions of random variables are random variables themselves.
+</p>
+</div>
+</div>
+
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    What is a Gaussian process and covariance structure?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+A <b>Gaussian process</b> is a generalization of a random variable. More specifically, it is a distribution over functions.
+Instead of each "draw" or "realization" being a number, each realization is an entire function called a <b>sample path</b>.
+Four 1D sample paths in the time/spatial domain are pictured below, each generated with the same mean and covariance structure.
+</p>
+<img src="sample_path.png" width="600"
+alt="Gaussian Process Sample Paths">
+<div class="section-title">Covariance Structure</div>
+<p>
+The covariance kernel/matrix/function provides the underlying structure of the field (tunable through parameters such as correlation length or variance). Choosing a covariance structure can be a bit arbitrary at times. In general, you want to model it off of the properties you observe in your time series/data (is it periodic? stationary? smooth?...). I refer the interested reader to the
+<a href="https://www.cs.toronto.edu/~duvenaud/cookbook/index.html">
+Kernel Cookbook
+</a>.
+The only rules for choosing a kernel is that it has to be symmetric and positive semi-definite.
+To incorporate randomness, you are essentially transforming white noise with the covariance kernel:
+</p>
+<div class="equation-box">
+$z \sim N(0,1)$
+<br><br>
+$C(t,t') = LL^T$
+<br><br>
+${cov}(Lz)=L^Tcov(z)L=LIL^T=LL^T=C(t,t')$
+</div>
+<p>
+One can imagine that if you sample more and more, a distribution over the sample paths will emerge.
+That is called your <b>latent function distribution</b>, which I like to think about as the <i>background</i> function.
+We choose a Gaussian distribution because it is uniquely determined by only two measurements (mean and covariance), is closed under conditioning, and is closed under marginalization.
+</p>
+<div class="section-title">Five Key Facts</div>
+<ol>
+<li>A Gaussian process is completely determined by its first and second moments</li>
+<li>All finite subsets of Gaussian processes must be jointly Gaussian</li>
+<li>Covariance controls structure</li>
+<li>More data reduces uncertainty</li>
+<li>Conditioning updates beliefs</li>
+</ol>
+</div>
+</div>
+
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    What are the types of random variable convergence?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+Convergence analysis allows us to make statements about long-term asymptotics of a sequence of random variables $X_n$.
+This is amazing because it can tell us if random events settle into patterns (whether about the mean, probability, or distribution).
+</p>
+<p>
+In probability theory, there exist three types of convergence of sequences of random variables (ordered here from weakest to strongest):
+</p>
+<ul>
+<li>
+<b>Convergence in distribution (law):</b>
+$F_{X_n}(x)\rightarrow F_X(x)$
+(think: the histograms match)
+</li>
+<ul>
+<li>
+If you roll a fair die many, many times, you'd expect the histogram to converge to the uniform distribution.
+</li>
+</ul>
+<li>
+<b>Convergence in probability:</b>
+$P(|X_n-X|>\epsilon)\rightarrow0$
+(think: they are close)
+</li>
+<ul>
+<li>
+If you were to plot the height of more and more people, the true mean human height would emerge.
+</li>
+</ul>
+<li>
+<b>Almost sure convergence:</b>
+$P(X_n\rightarrow X)=1$
+(think: we know how the sample paths will converge)
+</li>
+<ul>
+<li>
+If you studied how much a specific animal eats per day, that will fluctuate.
+But one day, you will be almost sure it will be 0.
+</li>
+</ul>
+</ul>
+</div>
+</div>
+
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    What is the Central Limit Theorem (CLT) vs. Weak Law of Large Numbers?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+The CLT and WLLN both study the same object, namely the sample mean
+$\bar X_n=\frac1N\sum X_i$,
+but ask two different questions about it:
+</p>
+<ul>
+<li>
+<b>CLT:</b>
+What is the long-term distribution of the sample mean?
+</li>
+<br>
+$$
+\frac{\sqrt n}{\sigma}
+(\bar X_n-\mu)
+\rightarrow
+N(0,1)
+$$
+<li>
+<b>WLLN:</b>
+What does the sample mean get closer and closer to?
+</li>
+<br>
+$$
+\bar X_n \rightarrow \mu
+$$
+</ul>
+</div>
+</div>
+</div>
+
+
+
+
+<script>
+
+document.querySelectorAll(".topic-header").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const content =
+            button.nextElementSibling;
+
+        const arrow =
+            button.querySelector(".arrow");
+
+        content.classList.toggle("active");
+        arrow.classList.toggle("rotate");
+
+    });
+
+});
+
+</script>
+
 </body>
 </html>
