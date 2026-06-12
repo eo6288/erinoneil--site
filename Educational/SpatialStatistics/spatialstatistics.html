@@ -110,7 +110,23 @@ blockquote{
 — Tobler's First Law of Geography
 </blockquote>
 <br>
+<h3>Motivations for Our Spatial Statistics Research: </h3>
+<p>
+  To study real phenomena, one might ideally take measurements at infinitely many spatial coordinates. This indexed collection of measurements is what we call a <b>spatial field</b>. In practice, however, dense measurements are often infeasible or impossible to obtain (for example, subsurface topography). Instead, we model the field as a <b>random process</b>. An ideal random field captures the essential structure of a complicated phenomenon using only a few physically meaningful parameters. We assume the field is <b>Gaussian</b> because Gaussian fields are fully characterized by their first- and second-order statistics. Of particular importance are the second-order statistics, since they describe correlation structure in space.
+<br>
+<br>
+<b>Spatial correlations</b> can be interpreted in terms of oscillatory structure. This motivates <b>Fourier analysis</b> and the <b>Wiener–Khinchin</b> relationship between covariance and spectrum. We additionally assume <b>isotropy</b> as the null hypothesis. We use a zero mean and a <b>Matérn covariance</b> model. We choose Matérn covariance because its parameters —variance, smoothness, and range— are physically meaningful.
+<br>
+<br>
+Although the spatial and spectral domains contain equivalent information, the spectral domain is often computationally advantageous because it approximately diagonalizes the problem. For an infinite stationary field, different wavenumbers are uncorrelated in the spectral domain. The major complication is that real observations are finite and sampled. Finite spatial windows introduce <b>spectral leakage/blurring</b> (“boundary effects”) and induce correlations between nearby wavenumbers. Increasing the spatial domain helps reduce these effects because larger windows better capture long-range correlations and reduce spectral leakage.
+<br>
+<br>
+To make likelihood-based inference computationally feasible, we often use the <b>Whittle likelihood</b>, which approximates the full covariance likelihood in the spectral domain. To assess parameter resolution and uncertainty, we study quantities such as the <b>score function</b>, <b>Hessian</b>, <b>Fisher information matrix</b>, and residual diagnostics (which will follow a chi-squared with 2 degrees of freedom due to the quadratic form of the likelihood). The Fisher information matrix measures how sensitive the likelihood is to changes in model parameters. Larger values generally indicate parameters that are better resolved by the data.
 
+</p>
+<br>
+<br>
+<h3> Key Spatial Questions:</h3>
 <!-- NEW TOPIC -->
 <div class="topic-card">
 <button class="topic-header">
@@ -255,34 +271,241 @@ But one day, you will be almost sure it will be 0.
 </button>
 <div class="topic-content">
 <p>
-The CLT and WLLN both study the same object, namely the sample mean
-$\bar X_n=\frac1N\sum X_i$,
+The CLT and WLLN both study the same object, namely the sample mean $\bar X_n=\frac1N\sum X_i$,
 but ask two different questions about it:
 </p>
 <ul>
 <li>
 <b>CLT:</b>
 What is the long-term distribution of the sample mean?
-</li>
-<br>
-$$
+$
 \frac{\sqrt n}{\sigma}
 (\bar X_n-\mu)
 \rightarrow
 N(0,1)
-$$
+$
 <li>
 <b>WLLN:</b>
 What does the sample mean get closer and closer to?
-</li>
-<br>
-$$
+$
 \bar X_n \rightarrow \mu
-$$
+$
 </ul>
 </div>
 </div>
 </div>
+
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+     Why is it that stationarity implies the absence of wavenumber correlation in the spectral density of covariance processes?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+First, it is important to motivate this question. Many estimation methods, such as the Whittle likelihood, rely on the assumption of stationarity to simplify the covariance structure in the spectral domain. Stationarity implies that the statistical properties of the process do not change with shifts in space. As a result, the covariance function depends only on the distance between two points, not on their absolute locations. This leads to a spectral density that is a function of wavenumber alone, without any cross-terms that would indicate correlation between different wavenumbers. In other words, under stationarity, the spectral density is diagonal in the wavenumber domain, which means that different wavenumbers are uncorrelated.
+<br>
+<br>
+$\langle dH(k) dH(k`) \rangle = S(k) \delta(k-k`) dk dk`$ 
+</p>
+</div>
+</div>
+</div>
+
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+     Why is the Matérn spatial correlation non-negative? Do negative correlation processes exist?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+Breaking down the Matérn equation, we will be able to see that it is always non-negative. The Matérn covariance function is given by:
+<br>
+<br>
+$C_{\mathbf{\theta}}(\mathbf r) &= \sigma^2 \frac{2^{1-\nu}}{\Gamma(\nu)} \left( \frac{2\sqrt{\nu}} {\pi\rho} \mathbf{r} \right)^\nu K_\nu \left( \frac{2\sqrt{\nu}} {\pi\rho} \mathbf{r} \right)$
+<br>
+<br>
+We first note that all the parameters are non-negative ($\rho >0$, $\nu >0$, $\sigma^2 >0$). A potential source of negativity is the modified Bessel function of the second kind, $K_\nu$. However, $K_\nu(z)$ is positive for all $z > 0$ and $\nu > -1$. Therefore, the entire expression for the Matérn covariance function is non-negative for all valid parameter values and spatial lags $\mathbf{r}$ (which are always positive). Finally, the Gamma function $\Gamma(\nu)$ is given by:
+<br>
+<br>
+$\Gamma(\nu) = \int_0^\infty t^{\nu-1} e^{-t} dt$ 
+<br>
+<br>
+Which you can verify is always positive. Interestingly, negative processes do exist, but they are not commonly used in spatial statistics.
+</p>
+</div>
+</div>
+</div>
+
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+     What are the different forms and models of an-isotropy in spatial processes?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+To figure out if your data is isotropic or an-isotropic, you can ask "is there a preferred direction in the spatial correlation structure or not?" A way you can test for this is by analyzing the residuals in wavenumber space. Ideally, the residuals $\chi_{\theta}(\mathbf{k}) = \hat{S}^{-1}(\mathbf{k}) |H(\mathbf{k})|^2$ should follow a $\chi^2$ statistic with 2 degrees of freedom ($\sim \frac{\chi_2^2}{2}$). You can this visually by plotting $\chi^2(\mathbf{k})$ and looking for structure. 
+<br>
+<br>
+Another way is to look at a quantile-quantile plot. If the points deviate from the line that correspons to ranks of a \chi_{\theta}(\mathbf{k}), that is a sign of an-isotropy. Below are example of isotropic and an-isotropic datasets illustrating these ideas. (These are taken from: <i>Simons, Frederik J., Olivia L. Walbert, Arthur P. Guillaumin, Gabriel L. Eggers, Kevin W. Lewis, and Sofia C. Olhede. 2026. “Maximum-Likelihood Estimation of the Matérn Covariance Structure of Isotropic Spatial Random Fields on Finite, Sampled Grids.” Geophysical Journal International 245(2):ggag044. doi:10.1093/gji/ggag044</i>)
+<br>
+<img src="isotropy.png" width="600" alt="Isotropic Data">
+<img src="anisotropy.png" width="600" alt="Anisotropic Data">
+
+<br>
+<br>
+A question that is good to always have in the back of one's mind pertaining to our research is "is isotropy a good enough model of the lithosphere?"
+</p>
+</div>
+</div>
+</div>
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+     What are some ways to simulate a Gaussian process?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+The two ways we focus on are:
+<li><b>Cholesky decomposition:</b> This method was used in the Simons & Olhede 2013 paper (<a href="https://doi.org/10.1093/gji/ggt056" target="_blank">https://doi.org/10.1093/gji/ggt056</a>) and uses the sgp.m MATLAB code (<a href="https://github.com/csdms-contrib/slepian_juliet/blob/master/sgp.m" target="_blank">https://github.com/csdms-contrib/slepian_juliet/blob/master/sgp.m</a>). It operates on the blurred spectrum but does not account for wavevector correaltions due to boundary effects. </li> 
+<br>
+<li><b>Circulant embedding:</b> This method involves embedding the covariance matrix in a larger circulant matrix in the spatial domain (mimicking periodicity) and then using the Fast Fourier Transform to generate realizations. It does account for exact blurring. It was used in the Simons et. al. 2026 paper (<a href="https://doi.org/10.1093/gji/ggag044" target="_blank">https://doi.org/10.1093/gji/ggag044</a>) and uses the MATLAB code (<a href="https://github.com/csdms-contrib/slepian_juliet/blob/master/randgpn.m" target="_blank">https://github.com/csdms-contrib/slepian_juliet/blob/master/randgpn.m</a>).  </li>
+</p>
+</div>
+</div>
+</div>
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+      How does the Whittle likelihood for parameterized Matérn covariance estimation work?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+The Whittle likelihood is an approximation to the full covariance likelihood that is computationally more tractable, especially for large datasets. It is based on the idea of transforming the data into the spectral domain, where the covariance structure becomes simpler under the assumption of stationarity. The Whittle likelihood for a parameterized Matérn covariance model can be expressed as:
+<br>
+<br>
+$L(\theta) = -\sum_{\mathbf{k}} \left[ \log S_{\theta}(\mathbf{k}) + \frac{|H(\mathbf{k})|^2}{S_{\theta}(\mathbf{k})} \right]$
+<br><br>
+Where $S_{\theta}(\mathbf{k})$ is the spectral density corresponding to the Matérn covariance function parameterized by $\theta$, and $H(\mathbf{k})$ is the Fourier transform of the observed data. The first term in the summation accounts for the model complexity, while the second term measures the fit of the model to the data. By maximizing this likelihood with respect to the parameters $\theta$, we can estimate the parameters of the Matérn covariance function that best explain the observed spatial data.
+<br>
+We choose to use the debiased Whittle likelihood (a quasi-likelihood), which corrects for bias introduced by finite sample sizes and spectral blurring, because it delivers asympototically unbiased, gaussian estimates of Matérn parameters under various sampling senarios (Simons et. al. 2026). The following venn diagram compares the Whittle likelihood to debiased Whittle likelihood:
+<img src="likelihoods.png" width="600" alt="Likelihood Comparison">
+The debiased Whittle likelihood is given by:
+<br>$\bar{L}(\theta) = -\sum_{\mathbf{k}} \left[ \log \bar{S}_{\theta}(\mathbf{k}) + \frac{|H(\mathbf{k})|^2 }{\bar{S}_{\theta}(\mathbf{k})} \right]$   
+</p>
+</div>
+</div>
+</div>
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    What kinds of asymptotic analysis do we use for spatial covariance estimation?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+There are three approaches to asymptotic analysis in spatial covariance estimation that we focus on:
+<li><b>Growing Domain:</b> This approach considers the behavior of estimators as the spatial domain increases indefinitely (holding $\Delta x$ and $\Delta y$ fixed). It is particularly relevant for understanding how well our methods perform when we have access to more and more spatial data. </li>
+<li><b>Infill (fixed-domain):</b> This approach studies the behavior of estimators as the spatial sampling becomes denser within a fixed domain (holding the domain size ($(N_x \Delta x, N_y \Delta y)$) fixed while $\Delta x$ and $\Delta y$ approach zero). It is useful for understanding the effects of increasing spatial resolution on parameter estimation. </li>
+<li><b>Reduced missingness:</b> Essentially, this eperiment replaces missing samples with data. 
+</li> 
+</p>
+<br>
+The main implications for the Matern parameters specifically are: 
+<br>
+1) For the growing domain, as the grid grows, relative estimator bias, variance, covariance, and RMSE all decrease. 
+<br>
+2) For the infill, as the grid becomes denser, a reduction of parameter variance for $\nu$, bias in $\nu$ and $\rho$ that didn't subside even with more data, reduced varaince of $\sigma^2$, and mixed covariances are observed. 
+<br>
+3) For the reduced missingness, essentially, the more observations of $\rho$ that fit in the grid experiment, the better. 
+<br>
+For more information, see <i>Walbert, O. L., Simons, F. J., Guillaumin, A. P., & Olhede, S. C. (2026). Irregularly and incompletely sampled random fields in the Earth sciences: Analysis and synthesis of parameterized covariance models (arXiv:2604.02179). arXiv. https://doi.org/10.48550/arXiv.2604.02179</i>
+</div>
+</div>
+</div>
+
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    What is the role of the spectral window in spectral covariance estimation?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+The spectral window refers to the fact that all observed data is finite and sampled, which leads to spectral blurring/leakage. The role of the spectral window in spectral covariance estimation is to account for the effects of this blurring on the observed periodogram. When we compute the periodogram from finite data, it does not directly reflect the true spectral density of the underlying process due to the convolution with the spectral window. Therefore, when estimating parameters of a covariance model, we need to consider how the spectral window modifies the observed periodogram and adjust our estimation methods accordingly (e.g., using a debiased Whittle likelihood that incorporates the expected value of the windowed periodogram).
+</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    What is the role of the expectation and variance of the windowed periodogram in parameterized covariance estimation?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+The primary role of the expectation of the windowed periodogram in parametrized covariance estimation is to mitigate the effects of spectral leakage, which occurs when the finite spatial window causes energy from one wavenumber to leak into others. The expectation of the windowed periogram approaches the true spectral density. The more averages of periodograms you have, the closer the expectation of the windowed periodogram will be to the true spectral density. Our research "proved" this by averaging 100 periograms and also by showing that the plot of the expectation of the windowed periodogram divided by the blurred spectrum was static. 
+<img src="exp_periodogram.png" alt="Windowed Periodogram" width="700">
+<br>
+The variance of the windowed periodogram, on the other hand, estimates the blurred power spectral density (the diagonals of plots b-d are rewrapped below).
+<img src="var_periodogram.png" alt="Windowed Periodogram Variance" width="700">
+</p>
+</div>
+</div>
+</div>
+
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    What are two different ways of implementing spectral blurring in the context of spatial statistical estimation?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+1) Acknowledge that the expectation of the spectral desnity $E[\hat{S}(k)]$ is the blurred spectrum and so you should also blur the model spectrum $S_{\theta}(k)$ when you are doing parameter estimation.
+<br>
+2) Actually capture the off-diagonals thorugh circulant embedding.
+</p>
+</div>
+</div>
+</div>
+
+<!-- NEW TOPIC -->
+<div class="topic-card">
+<button class="topic-header">
+    What is the Vecchia approximation?
+    <span class="arrow">▶</span>
+</button>
+<div class="topic-content">
+<p>
+The Vecchia approximation is a method for approximating the likelihood of a Gaussian process by decomposing the joint distribution into a product of conditional distributions. It is particularly useful for large datasets where computing the full covariance matrix is computationally infeasible. The approximation works by ordering the data points and then conditioning each point on a subset of the previous points in the order. This results in a sparse precision matrix, which allows for efficient computation of the likelihood and parameter estimation. The Vecchia approximation can be seen as a generalization of the nearest neighbor Gaussian process and is widely used in spatial statistics for modeling large spatial datasets.
+</p>
+</div>
+</div>
+</div>
+<br>
+<br>
+<a href="../Educational.html">back</a>  
+<br>
+<br>
+
+
 
 
 
